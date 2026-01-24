@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Dashboard</title>
+    <style>
+        :root {
+            --sidebar-color: #57a8fa;
+            --bg-color: #f4f7f6;
+            --accent-color: #3498db;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-color);
+        }
+
+        .dashboard-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 280px;
+            background-color: var(--sidebar-color);
+            color: white;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+
+        .map-card {
+            background: white;
+            flex-grow: 1;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            border: 1px solid #e0e0e0;
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .stat-badge {
+            background: var(--accent-color);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+
+
+<div class="dashboard-container">
+    <div class="sidebar">
+        <h2>Analytics</h2>
+        <hr style="width: 100%; opacity: 0.2;">
+        <div class="search-container">
+            <label for="cityInput" style="display:block; margin-bottom:5px; font-weight:bold;">Go to City:</label>
+            <input list="france-cities" id="cityInput" placeholder="Entrez la ville (e.g. Lyon)..." oninput="checkCity(this)">
+            <datalist id="france-cities">
+            </datalist>
+        </div>
+        <p>Cette carte est mise à jour à partir d'un fichier JSON.</p>
+        <div class="stat-badge">Live Data Feed</div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Carte de la France</h1>
+        </div>
+
+        <div class="map-card">
+            <iframe src="franceMap.html" title="Dynamic Map Content"></iframe>
+        </div>
+    </div>
+</div>
+
+<script>
+    const cities = {
+    "Paris": [48.8566, 2.3522], "Marseille": [43.2964, 5.3700], "Lyon": [45.7600, 4.8400],
+    "Toulouse": [43.6045, 1.4440], "Nice": [43.7034, 7.2663], "Nantes": [47.2181, -1.5528],
+    "Strasbourg": [48.5833, 7.7458], "Montpellier": [43.6108, 3.8767], "Bordeaux": [44.8378, -0.5792],
+    "Lille": [50.6292, 3.0573], "Rennes": [48.1173, -1.6778], "Reims": [49.2583, 4.0317],
+    "Toulon": [43.1242, 5.9280], "Saint-Étienne": [45.4397, 4.3872], "Le Havre": [49.4944, 0.1007],
+    "Grenoble": [45.1885, 5.7245], "Dijon": [47.3220, 5.0415], "Angers": [47.4784, -0.5632],
+    "Nîmes": [43.8367, 4.3601], "Villeurbanne": [45.7719, 4.8842], "Le Mans": [48.0061, 0.1996],
+    "Aix-en-Provence": [43.5297, 5.4474], "Clermont-Ferrand": [45.7772, 3.0870], "Brest": [48.3904, -4.4861],
+    "Tours": [47.3941, 0.6848], "Amiens": [49.8941, 2.2957], "Limoges": [45.8336, 1.2611],
+    "Annecy": [45.8992, 6.1294], "Perpignan": [42.6831, 2.8741], "Boulogne-Billancourt": [48.8352, 2.2409],
+    "Metz": [49.1193, 6.1757], "Besançon": [47.2378, 6.0241], "Orléans": [47.9030, 1.9083],
+    "Saint-Denis": [48.9362, 2.3574], "Rouen": [49.4432, 1.0999], "Argenteuil": [48.9478, 2.2478],
+    "Caen": [49.1829, -0.3707], "Mulhouse": [47.7464, 7.3384], "Nancy": [48.6921, 6.1844],
+    "Saint-Paul": [-21.0096, 55.2707], "Roubaix": [50.6927, 3.1774], "Tourcoing": [50.7264, 3.1532],
+    "Nanterre": [48.8924, 2.2071], "Avignon": [43.9493, 4.8055], "Vitry-sur-Seine": [48.7875, 2.3928],
+    "Créteil": [48.7771, 2.4531], "Dunkerque": [51.0343, 2.3768], "Poitiers": [46.5802, 0.3404],
+    "Asnières-sur-Seine": [48.9106, 2.2891], "Versailles": [48.8014, 2.1301], "Courbevoie": [48.8978, 2.2531]
+};
+
+const datalist = document.getElementById('france-cities');
+for (const cityName in cities) {
+    let option = document.createElement('option');
+    option.value = cityName;
+    datalist.appendChild(option);
+}
+
+function checkCity(input) {
+    const cityName = input.value;
+    if (cities[cityName]) {
+        const coords = cities[cityName];
+        const mapIframe = document.querySelector('iframe');
+        
+        mapIframe.contentWindow.postMessage({
+            type: 'zoom_to',
+            lat: coords[0],
+            lng: coords[1]
+        }, '*');
+        
+
+    }
+}
+
+</script>
+
+
+</body>
+</html>

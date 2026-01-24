@@ -27,7 +27,21 @@ for i in range(len(franceData["latitude"])):
                         Fill=False,
                         radius=5).add_to(franceMap)
 
-
+listener_js = """
+<script>
+window.addEventListener('message', function(event) {
+    if (event.data.type === 'zoom_to') {
+        // This line finds the map object regardless of what random ID Folium gives it
+        var map_obj = window[Object.keys(window).find(k => k.startsWith('map_'))];
+        
+        if (map_obj) {
+            map_obj.setView([event.data.lat, event.data.lng], 12);
+        }
+    }
+});
+</script>
+"""
+franceMap.get_root().html.add_child(folium.Element(listener_js))
 
 franceMap.save('franceMap.html')
 
