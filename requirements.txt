@@ -1,3 +1,11 @@
 plotly
 numpy
 pandas
+plotly express
+folium
+branca
+Path
+json
+requests
+folium.plugins
+dash
