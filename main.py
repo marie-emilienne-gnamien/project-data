@@ -72,7 +72,8 @@ def generate_city_histogram():
         y=averages, 
         labels={'x': 'Ville', 'y': 'Prix moyen Gazole (€)'},
         title='Prix moyen du Gazole — Grandes villes françaises',
-        template='plotly_white'
+        template='plotly_white',
+        color=present_cities
     )
     
     html_str = fig.to_html(full_html=True, include_plotlyjs='cdn')
@@ -96,7 +97,7 @@ app.layout = html.Div([
             srcDoc=open('src/pages/franceMap.html', 'r', encoding='utf-8').read(),
             style={'width': '100%', 'height': '600px', 'border': 'none'}
         )
-    ], style={
+        ], style={
         'width': '90%', 'margin': 'auto', 'border': '2px solid #47793B', 
         'borderRadius': '15px', 'overflow': 'hidden', 'boxShadow': '0 4px 15px rgba(0,0,0,0.2)'
     }),

@@ -1,11 +1,10 @@
 #Imports
-
-from pyproj import Transformer
 import folium, branca
 import json
 import requests
 import pandas as pd
-
+from folium import JsCode
+from folium.plugins import MarkerCluster
 #Données
 franceCenter = (46.539758, 2.430331)
 
@@ -15,33 +14,25 @@ franceData = pd.DataFrame(jsonResponse)
 
 franceData = franceData.query("gazole_prix.notna()")
 
-
 franceMap = folium.Map(location=franceCenter, tiles='OpenStreetMap', zoom_start=6)
 cm = branca.colormap.LinearColormap(['green','yellow','orange', 'red'], vmin=min(franceData["gazole_prix"]), vmax=max(franceData["gazole_prix"]))
-franceMap.add_child(cm) # add this colormap on the display
+franceMap.add_child(cm)
 
-for i in range(len(franceData["latitude"])):
-    location = (franceData["geom"].iloc[i]["lat"], franceData["geom"].iloc[i]["lon"])
-    folium.Circle(location=location,
-                        color= cm(float(franceData["gazole_prix"].iloc[i])),
-                        Fill=False,
-                        radius=5).add_to(franceMap)
+cluster = MarkerCluster().add_to(franceMap)
 
-listener_js = """
-<script>
-window.addEventListener('message', function(event) {
-    if (event.data.type === 'zoom_to') {
-        // This line finds the map object regardless of what random ID Folium gives it
-        var map_obj = window[Object.keys(window).find(k => k.startsWith('map_'))];
-        
-        if (map_obj) {
-            map_obj.setView([event.data.lat, event.data.lng], 12);
-        }
-    }
-});
-</script>
-"""
-franceMap.get_root().html.add_child(folium.Element(listener_js))
+for _, row in franceData.iterrows():
+
+    location = (row["geom"]["lat"], row["geom"]["lon"])
+
+    folium.CircleMarker(
+        location=location,
+        radius=5,
+        color=cm(float(row["gazole_prix"])),
+        fill=True,
+        fill_opacity=0.8,
+        tooltip=f"{row['ville']} : {row['gazole_prix']}€",
+        onclick="this._map.flyTo(this.getLatLng(), 16);"
+    ).add_to(cluster)
 
 franceMap.save('franceMap.html')
 
