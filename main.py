@@ -39,7 +39,7 @@ def generate_my_map():
     listener_js = "<script>window.addEventListener('message', function(event) { ... });</script>"
     franceMap.get_root().html.add_child(folium.Element(listener_js))
     
-    franceMap.save('project-data/src/pages/franceMap.html')
+    franceMap.save('src/pages/franceMap.html')
     return franceData
 
 def generate_city_histogram():
@@ -93,7 +93,7 @@ app.layout = html.Div([
     html.Div([
         html.Iframe(
             id='folium-map',
-            srcDoc=open('project-data/src/pages/franceMap.html', 'r', encoding='utf-8').read(),
+            srcDoc=open('src/pages/franceMap.html', 'r', encoding='utf-8').read(),
             style={'width': '100%', 'height': '600px', 'border': 'none'}
         )
     ], style={
