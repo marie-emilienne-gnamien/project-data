@@ -29,14 +29,19 @@ app.layout = html.Div([
         'borderRadius': '15px', 'overflow': 'hidden', 'boxShadow': '0 4px 15px rgba(0,0,0,0.2)'
     }),
 
-    dcc.Graph(id='graph1'),
-    dcc.Slider(id="year-slider", min=2024, max=2024, value=2024, marks={2024: '2024'})
+    # dcc.Graph(id='graph1'),
+    dcc.Slider(id="year-slider", min=2024, max=2024, value=2024, marks={2024: '2024'}),
+    html.Iframe(
+        id='histogram-moyenne',
+        srcDoc=open("src/pages/city_histogram.html", "r").read(),  # lit le contenu HTML
+        style={"width": "100%", "height": "600px", "border": "none"}
+    )
 ])
 
-@app.callback(
-    Output('graph1', 'figure'),
-    [Input('year-slider', 'value')]
-)
+# @app.callback(
+#     Output('graph1', 'figure'),
+#     [Input('year-slider', 'value')]
+# )
 def update_graph(selected_year):
     fig = px.histogram(franceData, x="gazole_prix", title="Les prix du gazole en France")
     return fig
