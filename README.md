@@ -1,10 +1,11 @@
 # Fuel Prices in France - Data Visualization Project
 
-A comprehensive data visualization and analysis project for fuel prices across France using Python.
+A comprehensive data visualization and analysis project for Gazole fuel prices across France using Python.
 
 ## Project Overview
 
-On this project Marie and I wanted to create a dashboard that analyzes and visualizes fuel price data from France, providing interactive maps, charts, and detailed analysis tools. It processes real-time fuel price data via API and presents it through a web-based interface with multiple pages and components.
+On this project Marie and I wanted to create a dashboard that analyzes and visualizes Gazole fuel price data from France, providing interactive maps, charts, and detailed analysis tools. It processes real-time Gazole fu
+el price data via API and presents it through a web-based interface with multiple pages and components.
 
 ## Project Structure
 
@@ -15,7 +16,6 @@ project-data/
 ├── config.py                        # Configuration settings
 ├── extractionData.py                # Data extraction utilities
 ├── requirements.txt                 # Python dependencies
-├── prix-des-carburants-en-france-flux-instantane-v2.json  # Fuel price data (JSON)
 ├── src/
 │   ├── components/                  # Reusable UI components
 │   │   ├── charts.py               # Chart components
@@ -39,8 +39,8 @@ project-data/
 
 ## Features
 
-- **Interactive Maps**: Visualization of fuel prices across French cities using `carte.py`
-- **Data Analysis**: Extract and analyze fuel price data from JSON and CSV sources
+- **Interactive Maps**: Visualization of Gazole fuel prices across French cities using `carte.py`
+- **Data Analysis**: Extract and analyze Gazole fuel price data from JSON and CSV sources
 - **Charts & Graphs**: Multiple chart components for data visualization
 - **Multi-page Application**: Home, About, City Histogram, and France Map pages
 - **Responsive UI**: Header, navbar, and footer components
