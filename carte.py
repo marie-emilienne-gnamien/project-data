@@ -31,7 +31,7 @@ def generate_my_map():
             color=cm(float(row["gazole_prix"])),
             fill=True,
             fill_opacity=0.8,
-            tooltip=f"{row['ville']} : {row['gazole_prix']}€",
+            tooltip=f"{row['ville']} : {row['gazole_prix']}€/L",
             onclick="this._map.flyTo(this.getLatLng(), 16);"
         ).add_to(cluster)
 
