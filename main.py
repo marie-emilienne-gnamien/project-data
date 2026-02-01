@@ -10,13 +10,15 @@ import data, carte, histograms
 
 carte.generate_my_map()
 histograms.generate_city_histogram()  # génère l'histogramme et le sauvegarde
+_, departements_df, noms_departements = histograms.departement_histograms("Moselle")
 years = [2026]
 franceData = data.fetch_live_data()
+
 app = dash.Dash(__name__)
 
 
 app.layout = html.Div([
-    html.H1('Gas Prices in France', style={'textAlign': 'center', 'color': "#47793B"}),
+    html.H1('Gazole Gas Prices in France', style={'textAlign': 'center', 'color': "#47793B"}),
 
     html.Div([
         html.Iframe(
@@ -29,22 +31,38 @@ app.layout = html.Div([
         'borderRadius': '15px', 'overflow': 'hidden', 'boxShadow': '0 4px 15px rgba(0,0,0,0.2)'
     }),
 
-    # dcc.Graph(id='graph1'),
-    dcc.Slider(id="year-slider", min=2024, max=2024, value=2024, marks={2024: '2024'}),
     html.Iframe(
         id='histogram-moyenne',
         srcDoc=open("src/pages/city_histogram.html", "r").read(),  # lit le contenu HTML
+        style={"width": "100%", "height": "500px", "border": "none"}
+    ),
+
+    html.Label('Département de votre choix :\n'),
+    dcc.Dropdown(
+        id="departement-dropdown",
+        options=[{'label' : str(name) , 'value' : str(name)}
+        for name in noms_departements
+        if pd.notna(name)
+        ],
+        value="Moselle",
+    ),
+    html.Iframe(
+        id='histogram-departement',
+        srcDoc=open("src/pages/departement_histogram.html", "r").read(),  # lit le contenu HTML
         style={"width": "100%", "height": "600px", "border": "none"}
     )
 ])
 
-# @app.callback(
-#     Output('graph1', 'figure'),
-#     [Input('year-slider', 'value')]
-# )
-def update_graph(selected_year):
-    fig = px.histogram(franceData, x="gazole_prix", title="Les prix du gazole en France")
-    return fig
+@app.callback(
+    Output('histogram-departement', 'srcDoc'),
+    [Input('departement-dropdown', 'value')]
+)
+def update_histogram(selected_departement):
+    out_path, _, _ = histograms.departement_histograms(selected_departement)
+
+    with open(out_path, mode='r', encoding='utf-8') as f:
+        content = f.read()
+    return content
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -36,8 +36,26 @@ def generate_city_histogram():
         template='plotly_white',
         color=present_cities
     )
+    fig.update_layout(legend=dict(title_text="Villes"))
     
     html_str = fig.to_html(full_html=True, include_plotlyjs='cdn')
     out_path = Path(__file__).parent / 'src/pages/city_histogram.html'
     out_path.write_text(html_str, encoding='utf-8')
     return out_path
+
+def departement_histograms(departement):
+    franceData = data.fetch_live_data()
+    departement_unique = franceData.query("gazole_prix.notna()")
+    departement_unique = departement_unique["departement"].unique()
+    departement_infos = franceData.query("departement == @departement and gazole_prix.notna()")
+    fig = px.bar(
+        x=departement_infos["ville"],
+        y=departement_infos["gazole_prix"],
+        labels={'x' : 'ville', 'y' : 'Nombre de stations par ville (département)'},
+        color=departement_infos["ville"],
+    )
+    fig.update_layout(legend=dict(title_text="Villes"))
+    html_str = fig.to_html(full_html=True, include_plotlyjs='cdn')
+    out_path = Path(__file__).parent / 'src/pages/departement_histogram.html'
+    out_path.write_text(html_str, encoding='utf-8')
+    return out_path, departement_infos, departement_unique
